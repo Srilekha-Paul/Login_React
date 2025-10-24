@@ -1,5 +1,5 @@
 import React from 'react';
-import AuthPage from './components/AuthPage';
+import AuthPage from '../components/AuthPage';
 
 
 
