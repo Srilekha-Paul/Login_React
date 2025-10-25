@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { FormData } from "../types/auth.types";
-
 import { authService } from "../services/authService";
-
-
 import { validateEmail, validatePassword, validateConfirmPassword } from "../utils/validation";
 
 
@@ -14,44 +11,49 @@ const AuthPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const handleSubmit = async () => {
     // Clear previous errors
     setErrors({});
-    
+
     // Validate form
     const newErrors: Partial<FormData> = {};
-    
+
     if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
-    
+
     if (!validatePassword(formData.password)) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = "Password must be at least 8 characters";
     }
-    
+
     if (!isLogin) {
       if (!formData.name || formData.name.trim().length < 2) {
-        newErrors.name = 'Name must be at least 2 characters';
+        newErrors.name = "Name must be at least 2 characters";
       }
-      
-      if (!validateConfirmPassword(formData.password, formData.confirmPassword || '')) {
-        newErrors.confirmPassword = 'Passwords do not match';
+
+      if (
+        !validateConfirmPassword(
+          formData.password,
+          formData.confirmPassword || ""
+        )
+      ) {
+        newErrors.confirmPassword = "Passwords do not match";
       }
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
       let response;
       if (isLogin) {
@@ -59,20 +61,24 @@ const AuthPage: React.FC = () => {
       } else {
         response = await authService.register(formData);
       }
-      
-      console.log('Authentication successful:', response);
-      alert(`${isLogin ? 'Login' : 'Registration'} successful! Check console for data.`);
-      
+
+      console.log("Authentication successful:", response);
+      alert(
+        `${isLogin ? "Login" : "Registration"} successful! Check console for data.`
+      );
+
       // Reset form after successful submission
       setFormData({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
       });
     } catch (error) {
-      console.error('Authentication error:', error);
-      alert(`${isLogin ? 'Login' : 'Registration'} failed. Please try again.`);
+      console.error("Authentication error:", error);
+      alert(
+        `${isLogin ? "Login" : "Registration"} failed. Please try again.`
+      );
     } finally {
       setIsLoading(false);
     }
@@ -80,16 +86,16 @@ const AuthPage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
+
     // Clear error for this field when user starts typing
     if (errors[name as keyof FormData]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: undefined
+        [name]: undefined,
       }));
     }
   };
@@ -97,17 +103,17 @@ const AuthPage: React.FC = () => {
   const toggleForm = () => {
     setIsLogin(!isLogin);
     setFormData({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     });
     setErrors({});
     setShowPassword(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSubmit();
     }
   };
@@ -119,10 +125,10 @@ const AuthPage: React.FC = () => {
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white">
             <h2 className="text-3xl font-bold text-center">
-              {isLogin ? 'Welcome Back' : 'Create Account'}
+              {isLogin ? "Welcome Back" : "Create Account"}
             </h2>
             <p className="text-center mt-2 text-blue-100">
-              {isLogin ? 'Sign in to continue' : 'Sign up to get started'}
+              {isLogin ? "Sign in to continue" : "Sign up to get started"}
             </p>
           </div>
 
@@ -132,7 +138,10 @@ const AuthPage: React.FC = () => {
               {/* Name field - only for register */}
               {!isLogin && (
                 <div className="space-y-2">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Full Name
                   </label>
                   <div className="relative">
@@ -145,7 +154,7 @@ const AuthPage: React.FC = () => {
                       onChange={handleChange}
                       onKeyPress={handleKeyPress}
                       className={`w-full pl-10 pr-4 py-3 border ${
-                        errors.name ? 'border-red-500' : 'border-gray-300'
+                        errors.name ? "border-red-500" : "border-gray-300"
                       } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition`}
                       placeholder="John Doe"
                     />
@@ -158,7 +167,10 @@ const AuthPage: React.FC = () => {
 
               {/* Email field */}
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Email Address
                 </label>
                 <div className="relative">
@@ -171,7 +183,7 @@ const AuthPage: React.FC = () => {
                     onChange={handleChange}
                     onKeyPress={handleKeyPress}
                     className={`w-full pl-10 pr-4 py-3 border ${
-                      errors.email ? 'border-red-500' : 'border-gray-300'
+                      errors.email ? "border-red-500" : "border-gray-300"
                     } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition`}
                     placeholder="you@example.com"
                   />
@@ -183,20 +195,23 @@ const AuthPage: React.FC = () => {
 
               {/* Password field */}
               <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     id="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
                     onKeyPress={handleKeyPress}
                     className={`w-full pl-10 pr-12 py-3 border ${
-                      errors.password ? 'border-red-500' : 'border-gray-300'
+                      errors.password ? "border-red-500" : "border-gray-300"
                     } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition`}
                     placeholder="••••••••"
                   />
@@ -205,37 +220,50 @@ const AuthPage: React.FC = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.password}
+                  </p>
                 )}
               </div>
 
               {/* Confirm Password - only for register */}
               {!isLogin && (
                 <div className="space-y-2">
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Confirm Password
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <input
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       id="confirmPassword"
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       onKeyPress={handleKeyPress}
                       className={`w-full pl-10 pr-4 py-3 border ${
-                        errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                        errors.confirmPassword
+                          ? "border-red-500"
+                          : "border-gray-300"
                       } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition`}
                       placeholder="••••••••"
                     />
                   </div>
                   {errors.confirmPassword && (
-                    <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.confirmPassword}
+                    </p>
                   )}
                 </div>
               )}
@@ -248,12 +276,14 @@ const AuthPage: React.FC = () => {
                       type="checkbox"
                       className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                     />
-                    <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                    <span className="ml-2 text-sm text-gray-600">
+                      Remember me
+                    </span>
                   </label>
-                  <button 
+                  <button
                     type="button"
                     className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                    onClick={() => alert('Forgot password functionality')}
+                    onClick={() => alert("Forgot password functionality")}
                   >
                     Forgot password?
                   </button>
@@ -265,10 +295,14 @@ const AuthPage: React.FC = () => {
                 onClick={handleSubmit}
                 disabled={isLoading}
                 className={`w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg hover:shadow-xl ${
-                  isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                {isLoading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
+                {isLoading
+                  ? "Processing..."
+                  : isLogin
+                  ? "Sign In"
+                  : "Create Account"}
               </button>
             </div>
 
@@ -281,10 +315,10 @@ const AuthPage: React.FC = () => {
 
             {/* Social Login */}
             <div className="mt-6 space-y-3">
-              <button 
+              <button
                 type="button"
                 className="w-full flex items-center justify-center gap-3 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                onClick={() => alert('Google login functionality')}
+                onClick={() => alert("Google login functionality")}
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
@@ -304,20 +338,24 @@ const AuthPage: React.FC = () => {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
-                <span className="font-medium text-gray-700">Continue with Google</span>
+                <span className="font-medium text-gray-700">
+                  Continue with Google
+                </span>
               </button>
             </div>
 
             {/* Toggle Login/Register */}
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                {isLogin ? "Don't have an account?" : 'Already have an account?'}
+                {isLogin
+                  ? "Don't have an account?"
+                  : "Already have an account?"}
                 <button
                   type="button"
                   onClick={toggleForm}
                   className="ml-2 text-blue-600 hover:text-blue-700 font-semibold"
                 >
-                  {isLogin ? 'Sign up' : 'Sign in'}
+                  {isLogin ? "Sign up" : "Sign in"}
                 </button>
               </p>
             </div>
